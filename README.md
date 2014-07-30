@@ -1,10 +1,12 @@
 #This plugin uses Google API to publish app to Google Play.
 
 Add plugin as .jar
-1. Build project via gradlew clean fatJar
-2. Get .jar from /build/libs/
-3. Put .jar in your project
-4. Create file client_secrets.json with following format
+
+- Build project via **gradlew clean fatJar**
+- Get .jar from **/build/libs/**
+- Put .jar in your project
+- Create file **client_secrets.json** with following format
+```
 {
   "installed": {
     "client_id": "[[INSERT CLIENT ID HERE]]",
@@ -14,7 +16,9 @@ Add plugin as .jar
     "token_uri": "https://accounts.google.com/o/oauth2/token"
   }
 }
-5. Setup build.gradle. Add something like this
+```
+- Setup **build.gradle**. Add something like this
+```
 buildscript {
     repositories {
         flatDir dirs: "/libs"
@@ -34,3 +38,4 @@ publishToPlay {
     keyPath = 'key.p12'
     settingsPath = 'client_secrets.json'
 }
+```
