@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'fatjar'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+  repositories {
+    mavenCentral()
+  }
+  compile fileTree(dir: '/libs')
+  compile gradleApi(), {
+      ext {
+          fatJarExclude = true
+      }
+  }
+  compile localGroovy(), {
+      ext {
+          fatJarExclude = true
+      }
+  }
+}
+
+fatJar {
+    exclude 'META-INF/*.DSA'
+}
+
+group = 'com.qiwi'
+version = '0.0.1'
+
