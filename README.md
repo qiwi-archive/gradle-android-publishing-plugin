@@ -2,10 +2,10 @@
 
 Add plugin as .jar
 
-1. Build project via gradlew clean fatJar
-2. Get .jar from /build/libs/
-3. Put .jar in your project
-4. Create file client_secrets.json with following format
+- Build project via **gradlew clean fatJar**
+- Get .jar from **/build/libs/**
+- Put .jar in your project
+- Create file **client_secrets.json** with following format
 ```
 {
   "installed": {
@@ -17,7 +17,7 @@ Add plugin as .jar
   }
 }
 ```
-5. Setup build.gradle. Add something like this
+- Setup **build.gradle**. Add something like this
 ```
 buildscript {
     repositories {
