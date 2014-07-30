@@ -35,7 +35,7 @@ publishToPlay {
     configPackageName = 'ru.mw'
     configEmail = 'ru.mw@ru.mw'
     configApkPath = '/path/to/apk'
-    keyPath = 'key.p12'
-    settingsPath = 'client_secrets.json'
+    keyPath = '/path/to/key.p12'
+    settingsPath = '/path/to/client_secrets.json'
 }
 ```
