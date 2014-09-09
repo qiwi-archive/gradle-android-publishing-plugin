@@ -24,7 +24,7 @@ buildscript {
         flatDir dirs: "/libs"
     }
     dependencies {
-        classpath "com.qiwi:gradle-android-publishing-plugin:0.0.1"
+        classpath 'com.qiwi:gradle-android-publishing-plugin:0.0.1'
     }
 }
 
