@@ -1,9 +1,6 @@
 package com.qiwi.mobile;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +46,11 @@ public class Worker {
             log.info(String.format("Created edit with id: %s", editId));
 
             // Upload new apk to developer console
-            final String apkPath = Worker.class
-                    .getResource(ApplicationConfig.APK_FILE_PATH)
-                    .toURI().getPath();
+//            final String apkPath = Worker.class
+//                    .getResource(ApplicationConfig.APK_FILE_PATH)
+//                    .toURI().getPath();
             final AbstractInputStreamContent apkFile =
-                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(apkPath));
+                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(ApplicationConfig.APK_FILE_PATH));
             Upload uploadRequest = edits
                     .apks()
                     .upload(ApplicationConfig.PACKAGE_NAME,
@@ -64,7 +61,7 @@ public class Worker {
                     apk.getVersionCode()));
 
             // Assign apk to alpha track.
-            List<Integer> apkVersionCodes = new ArrayList<>();
+            List<Integer> apkVersionCodes = new ArrayList<Integer>();
             apkVersionCodes.add(apk.getVersionCode());
             Update updateTrackRequest = edits
                     .tracks()
@@ -80,7 +77,7 @@ public class Worker {
             AppEdit appEdit = commitRequest.execute();
             log.info(String.format("App edit with id %s has been comitted", appEdit.getId()));
 
-        } catch (IOException | URISyntaxException | GeneralSecurityException ex) {
+        } catch (Exception ex) {
             log.error("Excpetion was thrown while uploading apk to alpha track", ex);
         }
     }
