@@ -46,11 +46,11 @@ public class Worker {
             log.info(String.format("Created edit with id: %s", editId));
 
             // Upload new apk to developer console
-            final String apkPath = Worker.class
-                    .getResource(ApplicationConfig.APK_FILE_PATH)
-                    .toURI().getPath();
+//            final String apkPath = Worker.class
+//                    .getResource(ApplicationConfig.APK_FILE_PATH)
+//                    .toURI().getPath();
             final AbstractInputStreamContent apkFile =
-                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(apkPath));
+                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(ApplicationConfig.APK_FILE_PATH));
             Upload uploadRequest = edits
                     .apks()
                     .upload(ApplicationConfig.PACKAGE_NAME,
