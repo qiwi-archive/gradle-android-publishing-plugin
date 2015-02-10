@@ -14,6 +14,7 @@ dependencies {
   repositories {
     mavenCentral()
   }
+
   compile 'com.google.code.gson:gson:2.3'
   compile 'commons-logging:commons-logging-api:1.1'
   compile 'javax.jdo:jdo2-api:2.3-eb'
@@ -25,24 +26,32 @@ dependencies {
   compile 'com.google.oauth-client:google-oauth-client-jetty:1.19.0'
   compile 'com.google.oauth-client:google-oauth-client-java6:1.19.0'
   compile 'com.google.oauth-client:google-oauth-client-appengine:1.19.0'
-  compile 'com.google.oauth-client:google-oauth-client:1.19.0'
+  compile ('com.google.oauth-client:google-oauth-client:1.19.0') {
+      exclude group: 'com.google.guava'
+  }
   compile 'com.google.http-client:google-http-client-jdo:1.19.0'
   compile 'com.google.http-client:google-http-client-jackson2:1.19.0'
   compile 'com.google.http-client:google-http-client-gson:1.19.0'
   compile 'com.google.http-client:google-http-client-appengine:1.19.0'
   compile 'com.google.http-client:google-http-client-android:1.19.0'
-  compile 'com.google.http-client:google-http-client:1.19.0'
+  compile ('com.google.http-client:google-http-client:1.19.0') {
+      exclude group: 'com.google.guava'
+  }
   compile 'com.google.apis:google-api-services-androidpublisher:v2-rev6-1.19.0'
   compile 'com.google.api-client:google-api-client-servlet:1.19.0'
   compile 'com.google.api-client:google-api-client-gson:1.19.0'
   compile 'com.google.api-client:google-api-client-jackson2:1.19.0'
   compile 'com.google.api-client:google-api-client-java6:1.19.0'
-  compile 'com.google.api-client:google-api-client:1.19.0'
+  compile ('com.google.api-client:google-api-client:1.19.0') {
+      exclude group: 'com.google.guava'
+  }
   compile 'com.google.api-client:google-api-client-android:1.19.0'
   compile 'com.google.api-client:google-api-client-appengine:1.19.0'
   compile 'org.apache.httpcomponents:httpclient:4.3.5'
   compile 'org.apache.httpcomponents:httpcore:4.3.2'
-  compile gradleApi(), {
+  compile 'com.google.guava:guava:18.0'
+
+    compile gradleApi(), {
       ext {
           fatJarExclude = true
       }
@@ -55,8 +64,8 @@ dependencies {
 }
 
 compileJava.doFirst {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 }
 
 fatJar {
@@ -64,5 +73,5 @@ fatJar {
 }
 
 group = 'com.qiwi'
-version = '0.1.0'
+version = '0.0.1'
 

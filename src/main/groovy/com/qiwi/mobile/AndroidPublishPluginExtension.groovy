@@ -2,6 +2,7 @@ package com.qiwi.mobile
 
 class AndroidPublishPluginExtension {
 
+    private String version
     private String configAppName
     private String configPackageName
     private String configEmail
@@ -56,4 +57,13 @@ class AndroidPublishPluginExtension {
     void setSettingsPath(String settingsPath) {
         this.settingsPath = settingsPath
     }
+
+    String getVersion() {
+        return version
+    }
+
+    void setVersion(String version) {
+        this.version = version
+    }
+
 }
