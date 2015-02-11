@@ -39,3 +39,4 @@ publishToPlay {
     settingsPath = '/path/to/client_secrets.json'
 }
 ```
+To publish your apk to Google Play use command ```./gradlew publishToPlay ```
