@@ -7,7 +7,7 @@ class AndroidPublishPlugin implements Plugin<Project>{
 
     @Override void apply(Project project) {
         def extensions = project.extensions.create("publishToPlay", AndroidPublishPluginExtension)
-        project.task('publish') << {
+        project.task('publishToPlay') << {
             Variables.configApkPath = extensions.configApkPath
             Variables.configAppName = extensions.configAppName
             Variables.configEmail = extensions.configEmail
