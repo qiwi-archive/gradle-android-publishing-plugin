@@ -1,5 +1,6 @@
 package com.qiwi.mobile
 
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -15,10 +16,10 @@ class AndroidPublishPlugin implements Plugin<Project> {
             Config.keyPath = extensions.keyPath
             Config.settingsPath = extensions.settingsPath
             Config.track = extensions.track
-            println("Start publish to the Google Play ...")
+            println("Start publish to Google Play ...")
             def result = Worker.upload()
-            if(result) println("App was successfully published to the Google Play!")
-            else println("We failed to publish app to the Google Play...")
+            if(result) println("App was successfully published to Google Play!")
+            else throw new GradleException()
         }
     }
 
