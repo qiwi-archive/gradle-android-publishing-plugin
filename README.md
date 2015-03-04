@@ -18,6 +18,7 @@ Add plugin as .jar
 }
 ```
 - Setup **build.gradle**. Add something like this:
+
 ```
 buildscript {
     repositories {
@@ -40,3 +41,5 @@ publishToPlay {
     track = 'alpha'
 }
 ```
+
+To publish your apk to Google Play use command ```./gradlew publishToPlay ```
