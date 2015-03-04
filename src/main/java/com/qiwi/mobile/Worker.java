@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import groovy.lang.GroovyClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,22 +26,18 @@ public class Worker {
 
     private static final Log log = LogFactory.getLog(Worker.class);
 
-    private static final String TRACK_ALPHA = "alpha";
-
-    public static void work() {
+    public static boolean upload() {
         try {
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(ApplicationConfig.PACKAGE_NAME),
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(Config.configPackageName),
                     "ApplicationConfig.PACKAGE_NAME cannot be null or empty!");
 
             // Create the API service.
             AndroidPublisher service = AndroidPublisherHelper.init(
-                    ApplicationConfig.APPLICATION_NAME, ApplicationConfig.SERVICE_ACCOUNT_EMAIL);
+                    Config.configAppName, Config.configEmail);
             final Edits edits = service.edits();
 
             // Create a new edit to make changes to your listing.
-            Insert editRequest = edits
-                    .insert(ApplicationConfig.PACKAGE_NAME,
-                            null /** no content */);
+            Insert editRequest = edits.insert(Config.configPackageName, null);
             AppEdit edit = editRequest.execute();
             final String editId = edit.getId();
             log.info(String.format("Created edit with id: %s", editId));
@@ -50,35 +47,34 @@ public class Worker {
 //                    .getResource(ApplicationConfig.APK_FILE_PATH)
 //                    .toURI().getPath();
             final AbstractInputStreamContent apkFile =
-                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(ApplicationConfig.APK_FILE_PATH));
+                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(Config.configApkPath));
             Upload uploadRequest = edits
                     .apks()
-                    .upload(ApplicationConfig.PACKAGE_NAME,
-                            editId,
-                            apkFile);
+                    .upload(Config.configPackageName, editId, apkFile);
             Apk apk = uploadRequest.execute();
             log.info(String.format("Version code %d has been uploaded",
                     apk.getVersionCode()));
 
-            // Assign apk to alpha track.
-            List<Integer> apkVersionCodes = new ArrayList<Integer>();
+            // Assign apk to track.
+            List<Integer> apkVersionCodes = new ArrayList<>();
             apkVersionCodes.add(apk.getVersionCode());
             Update updateTrackRequest = edits
                     .tracks()
-                    .update(ApplicationConfig.PACKAGE_NAME,
+                    .update(Config.configPackageName,
                             editId,
-                            TRACK_ALPHA,
+                            Config.track,
                             new Track().setVersionCodes(apkVersionCodes));
             Track updatedTrack = updateTrackRequest.execute();
             log.info(String.format("Track %s has been updated.", updatedTrack.getTrack()));
 
             // Commit changes for edit.
-            Commit commitRequest = edits.commit(ApplicationConfig.PACKAGE_NAME, editId);
+            Commit commitRequest = edits.commit(Config.configPackageName, editId);
             AppEdit appEdit = commitRequest.execute();
             log.info(String.format("App edit with id %s has been comitted", appEdit.getId()));
-
+            return true;
         } catch (Exception ex) {
-            log.error("Excpetion was thrown while uploading apk to alpha track", ex);
+            log.error("Exception was thrown while uploading apk ", ex);
+            return false;
         }
     }
 
