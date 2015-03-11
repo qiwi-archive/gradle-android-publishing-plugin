@@ -1,9 +1,6 @@
 package com.qiwi.mobile;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,60 +25,55 @@ public class Worker {
 
     private static final Log log = LogFactory.getLog(Worker.class);
 
-    private static final String TRACK_ALPHA = "alpha";
-
-    public static void work() {
+    public static boolean upload() {
         try {
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(ApplicationConfig.PACKAGE_NAME),
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(Config.configPackageName),
                     "ApplicationConfig.PACKAGE_NAME cannot be null or empty!");
 
             // Create the API service.
-            AndroidPublisher service = AndroidPublisherHelper.init(
-                    ApplicationConfig.APPLICATION_NAME, ApplicationConfig.SERVICE_ACCOUNT_EMAIL);
+            AndroidPublisher service = AndroidPublisherHelper.init(Config.configAppName, Config.configEmail);
             final Edits edits = service.edits();
 
             // Create a new edit to make changes to your listing.
             Insert editRequest = edits
-                    .insert(ApplicationConfig.PACKAGE_NAME,
-                            null /** no content */);
+                    .insert(Config.configPackageName, null /** no content */);
             AppEdit edit = editRequest.execute();
             final String editId = edit.getId();
             log.info(String.format("Created edit with id: %s", editId));
 
             // Upload new apk to developer console
-            final String apkPath = Worker.class
-                    .getResource(ApplicationConfig.APK_FILE_PATH)
-                    .toURI().getPath();
+//            final String apkPath = Worker.class
+//                    .getResource(ApplicationConfig.APK_FILE_PATH)
+//                    .toURI().getPath();
             final AbstractInputStreamContent apkFile =
-                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(apkPath));
+                    new FileContent(AndroidPublisherHelper.MIME_TYPE_APK, new File(Config.configApkPath));
             Upload uploadRequest = edits
                     .apks()
-                    .upload(ApplicationConfig.PACKAGE_NAME,
-                            editId,
-                            apkFile);
+                    .upload(Config.configPackageName, editId, apkFile);
             Apk apk = uploadRequest.execute();
             log.info(String.format("Version code %d has been uploaded",
                     apk.getVersionCode()));
 
-            // Assign apk to alpha track.
+            // Assign apk to track.
             List<Integer> apkVersionCodes = new ArrayList<>();
             apkVersionCodes.add(apk.getVersionCode());
             Update updateTrackRequest = edits
                     .tracks()
-                    .update(ApplicationConfig.PACKAGE_NAME,
+                    .update(Config.configPackageName,
                             editId,
-                            TRACK_ALPHA,
+                            Config.track,
                             new Track().setVersionCodes(apkVersionCodes));
             Track updatedTrack = updateTrackRequest.execute();
             log.info(String.format("Track %s has been updated.", updatedTrack.getTrack()));
 
             // Commit changes for edit.
-            Commit commitRequest = edits.commit(ApplicationConfig.PACKAGE_NAME, editId);
+            Commit commitRequest = edits.commit(Config.configPackageName, editId);
             AppEdit appEdit = commitRequest.execute();
             log.info(String.format("App edit with id %s has been comitted", appEdit.getId()));
-
-        } catch (IOException | URISyntaxException | GeneralSecurityException ex) {
-            log.error("Excpetion was thrown while uploading apk to alpha track", ex);
+            return true;
+        } catch (Exception ex) {
+            log.error("Exception was thrown while uploading apk ", ex);
+            return false;
         }
     }
 

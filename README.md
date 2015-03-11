@@ -17,14 +17,15 @@ Add plugin as .jar
   }
 }
 ```
-- Setup **build.gradle**. Add something like this
+- Setup **build.gradle**. Add something like this:
+
 ```
 buildscript {
     repositories {
         flatDir dirs: "/libs"
     }
     dependencies {
-        classpath "com.qiwi:gradle-android-publishing-plugin:0.0.1"
+        classpath 'com.qiwi:gradle-android-publishing-plugin:0.0.1'
     }
 }
 
@@ -32,10 +33,13 @@ apply plugin: 'android-publish'
 
 publishToPlay {
     configAppName = 'MyApp'
-    configPackageName = 'ru.mw'
-    configEmail = 'ru.mw@ru.mw'
+    configPackageName = 'com.example'
+    configEmail = 'hi@example.com'
     configApkPath = '/path/to/apk'
     keyPath = '/path/to/key.p12'
     settingsPath = '/path/to/client_secrets.json'
+    track = 'alpha'
 }
 ```
+
+To publish your apk to Google Play use command ```./gradlew publishToPlay ```
