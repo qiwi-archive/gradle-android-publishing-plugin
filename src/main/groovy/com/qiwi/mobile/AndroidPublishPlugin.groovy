@@ -22,6 +22,5 @@ class AndroidPublishPlugin implements Plugin<Project> {
             else throw new GradleException()
         }
     }
-
 }
 

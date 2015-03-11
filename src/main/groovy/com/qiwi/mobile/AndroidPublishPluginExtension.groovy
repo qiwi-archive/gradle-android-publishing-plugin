@@ -1,7 +1,6 @@
 package com.qiwi.mobile
 
 class AndroidPublishPluginExtension {
-
     String version
     String configAppName
     String configPackageName
@@ -10,5 +9,4 @@ class AndroidPublishPluginExtension {
     String keyPath
     String settingsPath
     String track
-
 }
