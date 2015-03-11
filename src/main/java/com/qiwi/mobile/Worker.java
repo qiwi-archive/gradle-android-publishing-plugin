@@ -31,12 +31,12 @@ public class Worker {
                     "ApplicationConfig.PACKAGE_NAME cannot be null or empty!");
 
             // Create the API service.
-            AndroidPublisher service = AndroidPublisherHelper.init(
-                    Config.configAppName, Config.configEmail);
+            AndroidPublisher service = AndroidPublisherHelper.init(Config.configAppName, Config.configEmail);
             final Edits edits = service.edits();
 
             // Create a new edit to make changes to your listing.
-            Insert editRequest = edits.insert(Config.configPackageName, null);
+            Insert editRequest = edits
+                    .insert(Config.configPackageName, null /** no content */);
             AppEdit edit = editRequest.execute();
             final String editId = edit.getId();
             log.info(String.format("Created edit with id: %s", editId));
