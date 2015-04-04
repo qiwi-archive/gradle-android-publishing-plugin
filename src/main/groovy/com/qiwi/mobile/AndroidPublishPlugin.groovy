@@ -9,17 +9,10 @@ class AndroidPublishPlugin implements Plugin<Project> {
     @Override void apply(Project project) {
         def extensions = project.extensions.create("publishToPlay", AndroidPublishPluginExtension)
         project.task('publishToPlay') << {
-            Config.configApkPath = extensions.configApkPath
-            Config.configAppName = extensions.configAppName
-            Config.configEmail = extensions.configEmail
-            Config.configPackageName = extensions.configPackageName
-            Config.keyPath = extensions.keyPath
-            Config.settingsPath = extensions.settingsPath
-            Config.track = extensions.track
             println("Start publish to Google Play ...")
-            def result = Worker.upload()
-            if(result) println("App was successfully published to Google Play!")
-            else throw new GradleException()
+            boolean result = Publisher.upload(extensions)
+            if(result) println("App was successfully published on Google Play!")
+            else throw new GradleException("Upload on Google Play failed!")
         }
     }
 }
