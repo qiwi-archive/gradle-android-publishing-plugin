@@ -2,7 +2,7 @@
 
 Add plugin as .jar
 
-- Build project via **gradlew clean fatJar**
+- Build project via **./gradlew clean fatJar**
 - Get .jar from **/build/libs/**
 - Put .jar in your project
 - Create file **client_secrets.json** with following format
@@ -39,7 +39,25 @@ publishToPlay {
     keyPath = '/path/to/key.p12'
     settingsPath = '/path/to/client_secrets.json'
     track = 'alpha'
+    updateMessage = 'path/to/message.json' // optional parameter
 }
 ```
+If you want to add update message, then put it into JSON file and add `updateMessage` optional parameter to `publishToPlay` section. JSON must have format like this:
+```
+{
+  "messages": [
+    {
+      "locale": "en-US",
+      "text": "This is a message"
+    },
+    {
+      "locale": "ru-RU",
+      "text": "Текст"
+    }
+  ]
+}
+```
+Locale must be specified according to IETF BCP 47.
 
 To publish your apk to Google Play use command ```./gradlew publishToPlay ```
+
