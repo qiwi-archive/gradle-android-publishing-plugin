@@ -7,6 +7,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.http.AbstractInputStreamContent
+import com.google.api.client.http.FileContent
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -16,70 +18,56 @@ import com.google.api.services.androidpublisher.AndroidPublisherScopes
 
 class PublisherHelper {
 
-    static final String MIME_TYPE_APK = "application/vnd.android.package-archive"
-    static final String SRC_RESOURCES_KEY_P12 = AndroidPublishPluginExtension.keyPath
-    static final String RESOURCES_CLIENT_SECRETS_JSON = AndroidPublishPluginExtension.settingsPath
-    static final String DATA_STORE_SYSTEM_PROPERTY = "user.home";
-    static final String DATA_STORE_FILE = ".store/android_publisher_api";
-    static final File DATA_STORE_DIR =
+    private static final String MIME_TYPE_APK = "application/vnd.android.package-archive"
+    private static final String DATA_STORE_SYSTEM_PROPERTY = "user.home";
+    private static final String DATA_STORE_FILE = ".store/android_publisher_api";
+    private static final File DATA_STORE_DIR =
             new File(System.getProperty(DATA_STORE_SYSTEM_PROPERTY), DATA_STORE_FILE)
-    static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance()
-    static HttpTransport HTTP_TRANSPORT
-    static final String INST_APP_USER_ID = "user"
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance()
+    private static HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()
+    private static final String INST_APP_USER_ID = "user"
+    private static FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
 
-    static FileDataStoreFactory dataStoreFactory
-
-    static Credential authorizeWithServiceAccount(String serviceAccountEmail) {
-        new GoogleCredential.Builder()
-                .setTransport(HTTP_TRANSPORT)
-                .setJsonFactory(JSON_FACTORY)
-                .setServiceAccountId(serviceAccountEmail)
-                .setServiceAccountScopes(
-                Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
-                .setServiceAccountPrivateKeyFromP12File(new File(SRC_RESOURCES_KEY_P12))
-                .build()
-    }
-
-    static Credential authorizeWithInstalledApplication() {
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(
-                JSON_FACTORY,
-                new InputStreamReader(
-                        PublisherHelper.class.getResourceAsStream(RESOURCES_CLIENT_SECRETS_JSON)))
-
-        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets,
-                Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
-                .setDataStoreFactory(dataStoreFactory).build();
-
-        new AuthorizationCodeInstalledApp(
-                flow, new LocalServerReceiver()).authorize(INST_APP_USER_ID)
-    }
-
-    static AndroidPublisher init(String applicationName) {
-        return init(applicationName, null);
-    }
-
-    static AndroidPublisher init(String applicationName, String serviceAccountEmail) {
-        newTrustedTransport();
-        Credential credential;
-
-        if (serviceAccountEmail == null || serviceAccountEmail.isEmpty()) {
-            credential = authorizeWithInstalledApplication();
+    static AndroidPublisher init(AndroidPublishPluginExtension params) {
+        Credential credential
+        if (params.configEmail == null || params.configEmail.isEmpty()) {
+            credential = authorizeWithInstalledApplication(params)
         } else {
-            credential = authorizeWithServiceAccount(serviceAccountEmail);
+            credential = authorizeWithServiceAccount(params)
         }
 
         new AndroidPublisher.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(applicationName)
-                .build();
+                .setApplicationName(params.configAppName)
+                .build()
     }
 
-    static void newTrustedTransport() {
-        if (null == HTTP_TRANSPORT) {
-            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        }
+    static Credential authorizeWithServiceAccount(AndroidPublishPluginExtension params) {
+        new GoogleCredential.Builder()
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setServiceAccountId(params.configEmail)
+                .setServiceAccountScopes(Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
+                .setServiceAccountPrivateKeyFromP12File(new File(params.keyPath))
+                .build()
+    }
+
+    static Credential authorizeWithInstalledApplication(AndroidPublishPluginExtension params) {
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(
+                JSON_FACTORY, new InputStreamReader(PublisherHelper.class.getResourceAsStream(params.settingsPath)))
+
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets,
+                Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
+                .setDataStoreFactory(dataStoreFactory)
+                .build();
+
+        new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver())
+                .authorize(INST_APP_USER_ID)
+    }
+
+    static AbstractInputStreamContent getApk(String path) {
+        new FileContent(MIME_TYPE_APK, new File(path))
     }
 
 }
