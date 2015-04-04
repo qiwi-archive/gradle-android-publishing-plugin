@@ -9,4 +9,5 @@ class AndroidPublishPluginExtension {
     String keyPath
     String settingsPath
     String track
+    String updateMessage
 }
