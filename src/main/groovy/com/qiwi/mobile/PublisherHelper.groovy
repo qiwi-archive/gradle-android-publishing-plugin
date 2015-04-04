@@ -15,12 +15,13 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.androidpublisher.AndroidPublisher
 import com.google.api.services.androidpublisher.AndroidPublisherScopes
+import groovy.json.JsonSlurper
 
 class PublisherHelper {
 
     private static final String MIME_TYPE_APK = "application/vnd.android.package-archive"
-    private static final String DATA_STORE_SYSTEM_PROPERTY = "user.home";
-    private static final String DATA_STORE_FILE = ".store/android_publisher_api";
+    private static final String DATA_STORE_SYSTEM_PROPERTY = "user.home"
+    private static final String DATA_STORE_FILE = ".store/android_publisher_api"
     private static final File DATA_STORE_DIR =
             new File(System.getProperty(DATA_STORE_SYSTEM_PROPERTY), DATA_STORE_FILE)
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance()
@@ -60,7 +61,7 @@ class PublisherHelper {
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets,
                 Collections.singleton(AndroidPublisherScopes.ANDROIDPUBLISHER))
                 .setDataStoreFactory(dataStoreFactory)
-                .build();
+                .build()
 
         new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver())
                 .authorize(INST_APP_USER_ID)
@@ -68,6 +69,12 @@ class PublisherHelper {
 
     static AbstractInputStreamContent getApk(String path) {
         new FileContent(MIME_TYPE_APK, new File(path))
+    }
+
+    static Object parseJson(String path) {
+        File file = new File(path)
+        JsonSlurper parser = new JsonSlurper()
+        parser.parse(new FileReader(file))
     }
 
 }

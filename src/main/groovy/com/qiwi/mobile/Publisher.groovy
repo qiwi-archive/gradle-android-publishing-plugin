@@ -1,7 +1,7 @@
 package com.qiwi.mobile
-
 import com.google.api.services.androidpublisher.AndroidPublisher
 import com.google.api.services.androidpublisher.model.Apk
+import com.google.api.services.androidpublisher.model.ApkListing
 import com.google.api.services.androidpublisher.model.AppEdit
 import com.google.api.services.androidpublisher.model.Track
 
@@ -28,6 +28,17 @@ class Publisher {
                     .tracks()
                     .update(params.configPackageName, editId, params.track, new Track().setVersionCodes(apkVersionCodes))
             updateTrackRequest.execute()
+
+            if (params.updateMessage != "" && params.updateMessage != null) {
+                def json = PublisherHelper.parseJson(params.updateMessage)
+                json.messages.each { entry ->
+                    AndroidPublisher.Edits.Apklistings.Update updateRecentChangesRequest = edits
+                            .apklistings()
+                            .update(params.configPackageName, editId, apk.getVersionCode(),
+                            entry.locale, new ApkListing().setRecentChanges(entry.text))
+                    updateRecentChangesRequest.execute()
+                }
+            }
 
             AndroidPublisher.Edits.Commit commitRequest = edits.commit(params.configPackageName, editId)
             commitRequest.execute()
