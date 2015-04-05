@@ -14,7 +14,6 @@ dependencies {
     repositories {
         mavenCentral()
     }
-
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-logging:commons-logging-api:1.1'
     compile 'javax.jdo:jdo2-api:2.3-eb'
@@ -73,4 +72,4 @@ fatJar {
 }
 
 group = 'com.qiwi'
-version = '0.0.1'
+version = '0.2.0'
