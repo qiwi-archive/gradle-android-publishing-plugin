@@ -2,7 +2,7 @@
 
 Add plugin from Bintray
 
-- Build project via **./gradlew clean fatJar publishBintray** (Don't forget to put env. variables with credentials)(Optional)
+- Build project via **./gradlew clean fatJar bintrayUpload** (Don't forget to put env. variables with credentials)(Optional)
 - Create file **client_secrets.json** with following format
 ```
 {
