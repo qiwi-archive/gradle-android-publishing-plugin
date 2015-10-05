@@ -1,10 +1,8 @@
 #This plugin uses Google API to publish app to Google Play.
 
-Add plugin as .jar
+Add plugin from Bintray
 
-- Build project via **./gradlew clean fatJar**
-- Get .jar from **/build/libs/**
-- Put .jar in your project
+- Build project via **./gradlew clean fatJar bintrayUpload** (Don't forget to put env. variables with credentials)(Optional step)
 - Create file **client_secrets.json** with following format
 ```
 {
@@ -22,7 +20,7 @@ Add plugin as .jar
 ```
 buildscript {
     repositories {
-        flatDir dirs: "/libs"
+        jcenter()
     }
     dependencies {
         classpath 'com.qiwi:gradle-android-publishing-plugin:0.2.0'
