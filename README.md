@@ -1,8 +1,13 @@
 #This plugin uses Google API to publish app to Google Play.
 
-Add plugin from Bintray
+##Build and upload to Bintray:##
+Build project via
+```
+./gradlew clean fatJar bintrayUpload
+```
+(Don't forget to put env. variables with credentials)
 
-- Build project via **./gradlew clean fatJar bintrayUpload** (Don't forget to put env. variables with credentials)(Optional step)
+##Setup:##
 - Create file **client_secrets.json** with following format
 ```
 {
@@ -16,7 +21,6 @@ Add plugin from Bintray
 }
 ```
 - Setup **build.gradle**. Add something like this:
-
 ```
 buildscript {
     repositories {
@@ -40,7 +44,7 @@ publishToPlay {
     updateMessage = 'path/to/message.json' // optional parameter
 }
 ```
-If you want to add update message, then put it into JSON file and add `updateMessage` optional parameter to `publishToPlay` section. JSON must have format like this:
+- If you want to add update message, then put it into JSON file and add `updateMessage` optional parameter to `publishToPlay` section. JSON must have format like this:
 ```
 {
   "messages": [
@@ -57,5 +61,8 @@ If you want to add update message, then put it into JSON file and add `updateMes
 ```
 Locale must be specified according to IETF BCP 47.
 
-To publish your apk to Google Play use command ```./gradlew publishToPlay ```
-
+##Using plugin:##
+To publish your apk to Google Play use command 
+```
+./gradlew publishToPlay 
+```
